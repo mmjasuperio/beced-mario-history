@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BECED early childhood History World Level Assessment</title>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #5c94fc; /* Mario Sky Blue */
+            margin: 0;
+            padding: 0;
+            color: #333;
+            display: block;
+        }
+        .container {
+            max-width: 850px;
+            margin: 30px auto;
+            background-color: #f7f5f0;
+            border: 6px solid #222;
+            border-radius: 12px;
+            box-shadow: 0 12px 0 #111;
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        .mario-header {
+            background-color: #e52521; /* Mario Red */
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border: 4px solid #000;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        .mario-header h1 {
+            margin: 0;
+            font-size: 26px;
+            text-shadow: 3px 3px 0px #000;
+            letter-spacing: 1px;
+        }
+        .mario-header p {
+            margin: 5px 0 0 0;
+            font-weight: bold;
+            color: #fbd000; /* Mario Yellow */
+            text-shadow: 1px 1px 0px #000;
+        }
+        .screen {
+            display: none;
+        }
+        .screen.active {
+            display: block;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        input[type="text"], select {
+            width: 100%;
+            padding: 12px;
+            border: 3px solid #000;
+            border-radius: 6px;
+            font-size: 16px;
+            background-color: #fff;
+        }
+        .mario-btn {
+            background-color: #43b047; /* Luigi Green */
+            color: white;
+            padding: 14px 28px;
+            border: 3px solid #000;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #1e6321;
+            display: inline-block;
+            text-align: center;
+            width: 100%;
+            text-transform: uppercase;
+        }
+        .mario-btn:hover {
+            background-color: #3aa03e;
+        }
+        .mario-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #1e6321;
+        }
+        .level-badge {
+            background-color: #fbd000;
+            color: #000;
+            border: 3px solid #000;
+            display: inline-block;
+            padding: 6px 15px;
+            font-weight: bold;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        .scenario-box {
+            background-color: #fff;
+            border: 3px dashed #e52521;
+            padding: 18px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-style: italic;
+            line-height: 1.5;
+            background-image: radial-gradient(#eee 15%, transparent 16%);
+            background-size: 16px 16px;
+        }
+        .options-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0 0 25px 0;
+        }
+        .option-item {
+            background-color: #fff;
+            border: 3px solid #000;
+            border-radius: 8px;
+            padding: 14px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: table;
+            width: 100%;
+        }
+        .option-item:hover {
+            background-color: #fff2cc;
+            border-color: #e52521;
+        }
+        .option-item input[type="radio"] {
+            display: table-cell;
+            vertical-align: middle;
+            margin-right: 12px;
+            transform: scale(1.3);
+        }
+        .option-text {
+            display: table-cell;
+            vertical-align: middle;
+            padding-left: 10px;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+        .hud-bar {
+            background-color: #222;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: table;
+            width: 100%;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .hud-item {
+            display: table-cell;
+            width: 33.33%;
+            text-align: center;
+        }
+        .hud-item:first-child { text-align: left; }
+        .hud-item:last-child { text-align: right; color: #ff4747; }
+        .feedback-box {
+            display: none;
+            padding: 18px;
+            border: 4px solid #000;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .feedback-box.correct {
+            background-color: #d4edda;
+            border-color: #28a745;
+        }
+        .feedback-box.incorrect {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+        }
+        .char-voice {
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #000;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+        .cheater-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.95);
+            z-index: 9999;
+            color: #ff4747;
+            text-align: center;
+            padding-top: 15%;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .cheater-overlay h1 { font-size: 50px; margin-bottom: 20px; text-shadow: 4px 4px 0 #000; }
+        .cheater-overlay p { font-size: 20px; color: #fff; max-width: 600px; margin: 0 auto; line-height: 1.6;}
+        
+        /* Intro graphic elements */
+        .mario-decorations {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- HEADER HUD -->
+        <div class="mario-header">
+            <div class="mario-decorations">🍄 ⭐ 🧱 🦖 🏰</div>
+            <h1>BECED MARIO pedHistory QUEST</h1>
+            <p>University-Level Early Childhood Historical Foundations Mission</p>
+        </div>
+
+        <!-- SCREEN 1: LOGIN -->
+        <div id="screen-login" class="screen active">
+            <h2>Welcome, Pre-Service ECE Scholars!</h2>
+            <p>Bowser has locked away the sacred records of foundational early childhood theories from ancient Greece to modern Montessori! The Mushroom Kingdom needs your deep pedagogical expertise to reclaim the historical scrolls.</p>
+            <p><strong>⚠️ ACADEMIC INTEGRITY ENFORCED:</strong> Opening other tabs or minimizing this browser window will be instantly tracked and reported to your Professor's Master Sheet. Only one game attempt is permitted!</p>
+            
+            <div style="background: #e2f0d9; border: 2px solid #385723; padding: 15px; border-radius: 6px; margin-bottom: 25px;">
+                <div class="form-group">
+                    <label for="student-name">Enter Full Name:</label>
+                    <input type="text" id="student-name" placeholder="First Name Last Name">
+                </div>
+                <div class="form-group">
+                    <label for="year-level">Select Year Level:</label>
+                    <select id="year-level">
+                        <option value="">-- Choose Year --</option>
+                        <option value="BECED 1st Year">BECED 1st Year</option>
+                        <option value="BECED 2nd Year">BECED 2nd Year</option>
+                        <option value="BECED 3rd Year">BECED 3rd Year</option>
+                        <option value="BECED 4th Year">BECED 4th Year</option>
+                    </select>
+                </div>
+            </div>
+            <button class="mario-btn" onclick="startGame()">Start Level 1-1 🚀</button>
+        </div>
+
+        <!-- SCREEN 2: GAMEPLAY -->
+        <div id="screen-game" class="screen">
+            <div class="hud-bar">
+                <div class="hud-item" id="hud-student">PLAYER: </div>
+                <div class="hud-item" id="hud-score">SCORE: 00 / 20</div>
+                <div class="hud-item" id="hud-violations">TAB LEAVES: 0</div>
+            </div>
+
+            <div class="level-badge" id="level-title">World 1-1</div>
+            <div class="scenario-box" id="level-scenario">Scenario loading...</div>
+
+            <form id="quiz-form">
+                <ul class="options-list">
+                    <li class="option-item" onclick="document.getElementById('optA').click();">
+                        <input type="radio" id="optA" name="mario_ans" value="A">
+                        <span class="option-text" id="textA">Option A</span>
+                    </li>
+                    <li class="option-item" onclick="document.getElementById('optB').click();">
+                        <input type="radio" id="optB" name="mario_ans" value="B">
+                        <span class="option-text" id="textB">Option B</span>
+                    </li>
+                    <li class="option-item" onclick="document.getElementById('optC').click();">
+                        <input type="radio" id="optC" name="mario_ans" value="C">
+                        <span class="option-text" id="textC">Option C</span>
+                    </li>
+                    <li class="option-item" onclick="document.getElementById('optD').click();">
+                        <input type="radio" id="optD" name="mario_ans" value="D">
+                        <span class="option-text" id="textD">Option D</span>
+                    </li>
+                </ul>
+            </form>
+
+            <!-- FEEDBACK BOX -->
+            <div id="feedback" class="feedback-box">
+                <div class="char-voice" id="feedback-speaker">TOAD SAYS:</div>
+                <div id="feedback-text">Explanation...</div>
+            </div>
+
+            <button class="mario-btn" id="action-btn" onclick="submitAnswer()">Verify Pedagogical Answer ✔️</button>
+        </div>
+
+        <!-- SCREEN 3: RESULTS / SYNC -->
+        <div id="screen-results" class="screen">
+            <h2>🏆 MISSION COMPLETED! 🏆</h2>
+            <p>Fantastic job! You've navigated the historical timelines of early childhood education and successfully protected the Mushroom Kingdom from pedagogical regression.</p>
+            
+            <div style="background: #fff; border: 4px solid #222; padding: 20px; border-radius: 8px; margin: 25px 0; text-align: center;">
+                <h3 style="margin-top:0;">FINAL SCORE CARD</h3>
+                <p style="font-size: 24px; font-weight: bold; color: #e52521;" id="final-score-display">0 / 20 (0%)</p>
+                <p id="final-rank-display" style="font-weight: bold; color: #2c3e50;"></p>
+                <p id="final-cheating-display" style="font-size: 14px; color: #7f8c8d;"></p>
+            </div>
+
+            <p>Click below to securely sync your score directly into your Professor's Google Sheet monitoring database.</p>
+            <button class="mario-btn" style="background-color: #002fbe;" id="sync-btn" onclick="syncToGoogleSheets()">Sync Game Outcomes to Tracker 💾</button>
+            <p id="sync-status" style="text-align:center; font-weight:bold; margin-top:15px; color:#43b047;"></p>
+        </div>
+    </div>
+
+    <!-- CHEATER OVERLAY -->
+    <div id="cheater-screen" class="cheater-overlay">
+        <h1>GAME OVER</h1>
+        <p><strong>SECURITY EXCEPTION TRIGGERED!</strong><br><br>
+        Our security system detected that you switched tabs, minimized your browser window, or attempted to navigate away during gameplay.<br><br>
+        To preserve academic integrity, your examination session has been frozen. This violation has been flagged, and your name has been logged for review by the course professor.</p>
+    </div>
+
+    <script>
+        // INSERT YOUR GOOGLE APPS SCRIPT WEB APP URL HERE TO ENABLE REAL-TIME SYNCING
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwLGJW4u-BQmZD4sRRAvPVQolGi9GwDJnuuPwBVSz9q2t3T2QGmJ5y6iAwszcOJaobW/exec";
+
+        const quizData = [{"id": 1, "world": "World 1-1: Toad Town Square", "scenario": "Bowser has cast a spell causing the Mushroom Kingdom to confuse ancient educational models! He claims that Sparta and Athens had the exact same goals for early childhood. To break the spell, identify the fundamental difference between Spartan and Athenian early childhood socialization.", "options": {"A": "Sparta emphasized state-controlled, rigorous physical and military preparation from age seven, while Athens focused on a balanced civic, literary, and intellectual development within the family unit during early childhood.", "B": "Athens banned all forms of play and literature for toddlers, whereas Sparta established the world's first play-based nursery schools.", "C": "Sparta trained young girls exclusively in domestic arts, while Athens required both boys and girls to enter mandatory state-run military academies at age two.", "D": "Both societies completely rejected the role of the family, placing infants in collective state nurseries immediately at birth."}, "correct": "A", "character": "Toad", "explanation": "Bup! That's it! In Sparta, early childhood was strictly a prelude to state-controlled military discipline (the Agoge). But in Athens, the early years were spent at home focused on developing well-rounded citizens through poetry, music, and balanced sports. Bowser can't fool our BECED scholars!"}, {"id": 2, "world": "World 1-2: Yoshi's Island Playgrounds", "scenario": "Kamek is rewriting history to claim that Plato viewed early childhood play as a waste of time that promotes rebellion. How did Plato *actually* conceptualize the role of play in his ideal Republic?", "options": {"A": "Play should be entirely unregulated so that children can vent their natural destructive instincts.", "B": "Play is a vital pedagogical tool because it reveals a child's natural inclinations and talents, which helps determine their future civic roles in the state.", "C": "Play is a dangerous distraction that must be replaced by formal logical reasoning drills starting at age two.", "D": "Play is only useful if it involves learning how to manage financial transactions and trade."}, "correct": "B", "character": "Yoshi", "explanation": "Yoshi! Plato believed that through carefully selected games, toys, and stories, educators could observe what a child is naturally good at. This helped place them in their proper societal track (workers, guardians, or rulers) in his Republic. Play has a major civic purpose!"}, {"id": 3, "world": "World 1-3: Koopa Troopa Beach", "scenario": "The Koopa Troop is trying to bypass developmental stages! They argue that Aristotle believed toddlers should be taught abstract scientific formulas immediately. Based on Aristotle's developmental stages, what is the primary focus of education in a child's earliest years?", "options": {"A": "The immediate training of the rational mind through dialectic argumentation and philosophical debates.", "B": "The complete suppression of physical movement to preserve mental energy for later schooling.", "C": "Habit formation (*hexis*) and physical/moral development, ensuring that healthy habits are formed before formal intellectual instruction begins.", "D": "Allowing the child to live in total isolation from society to preserve their genetic purity."}, "correct": "C", "character": "Luigi", "explanation": "M-Mama mia! Aristotle was very clear: the body and the non-rational parts of the soul develop *before* the rational mind. That means early childhood must focus on establishing good physical and moral habits through routine and behavior modeling, preparing a solid foundation for later reason!"}, {"id": 4, "world": "World 1-4: Bowser's Castle Courtyard", "scenario": "Bowser has locked up the ancient scrolls of Roman pedagogy! He claims that Marcus Fabius Quintilian advocated for strict corporate punishment and beatings to make toddlers learn Latin faster. To defeat Bowser's guard, identify Quintilian's actual stance on early learning.", "options": {"A": "He advocated for heavy physical discipline, believing that fear is the ultimate motivator for early literacy.", "B": "He completely opposed corporal punishment, arguing that it degrades the child's spirit and creates an early, lifelong aversion to learning.", "C": "He believed children should not learn to speak or read until they reach the age of twelve.", "D": "He asserted that early childhood education should be entirely mechanical, relying solely on rote memorization without any understanding."}, "correct": "B", "character": "Princess Peach", "explanation": "Thank you for standing up for children! Quintilian was incredibly progressive for his time in ancient Rome. He believed that learning should be an attractive game (*lusus*) tailored to the child's age, and that hitting children only breaks their confidence and makes them hate school."}, {"id": 5, "world": "World 2-1: Boo's Haunted Mansion", "scenario": "A spooky ghost is whispering that during the Middle Ages, society had highly advanced, specialized early childhood centers with child-sized furniture. What was the historical reality of how young children were viewed during the medieval period?", "options": {"A": "Children were viewed through the lens of preformationism\u2014regarded as 'miniature adults' who differed from adults only in size, leading to a lack of distinct early childhood programs.", "B": "It was the golden age of child psychology, where the unique cognitive stages of infants were universally celebrated.", "C": "Children were considered divine rulers who were exempt from all chores, labor, or social responsibilities until age twenty.", "D": "Infants were placed in specialized high-tech state nurseries run by medieval scholars."}, "correct": "A", "character": "Toad", "explanation": "Yikes, a ghost! Don't let it trick you! In the Middle Ages, the concept of 'childhood' as a distinct developmental stage barely existed. Once children outgrew physical infancy (around age 7), they were dressed like adults, integrated directly into adult work, and expected to behave like adults. No specialized ECE here!"}, {"id": 6, "world": "World 2-2: Mario Circuit Speedway", "scenario": "Waluigi is claiming that humanistic Renaissance thinkers like Sir Thomas More believed women should be entirely excluded from early literacy and education. How does More's *Utopia* counter this claim?", "options": {"A": "More argued that only the royal prince should ever learn to read.", "B": "In *Utopia*, More advocated for universal education, explicitly including both men and women in intellectual pursuits, which laid the groundwork for modern gender equity in early schooling.", "C": "He proposed that women should only be taught how to build racing karts.", "D": "He suggested that children should be raised by mechanical devices rather than human mothers."}, "correct": "B", "character": "Princess Peach", "explanation": "Splendid driving! Sir Thomas More's humanistic vision in *Utopia* broke traditional barriers by suggesting that all citizens\u2014regardless of gender\u2014should have access to education. This opened the door for recognizing the intellectual capacity of young girls and the value of educated mothers as first teachers."}, {"id": 7, "world": "World 2-3: Cheep Cheep Ocean Deep", "scenario": "A school of Cheep Cheeps is tangled in a net of Protestant Reformation history! Martin Luther is being accused of believing that the State has zero responsibility for establishing schools for young children. What was Luther's actual breakthrough contribution to universal literacy?", "options": {"A": "He argued that schools should only exist for the wealthy elite who could afford private tutors.", "B": "He advocated for state-supported, compulsory universal schooling for both boys and girls so they could read the Bible in their vernacular language and become productive citizens.", "C": "He banned the printing press and ordered all learning to be purely oral.", "D": "He claimed that children should only study military tactics and navigation."}, "correct": "B", "character": "Luigi", "explanation": "Wow! Martin Luther revolutionized education by shifting the responsibility to the community and the state. He wanted *everyone* (not just priests) to be literate in their own language. By insisting that boys and girls go to school to read scripture, he laid the foundations for public school systems!"}, {"id": 8, "world": "World 2-4: Larry's Koopa Airship", "scenario": "Larry Koopa has hijacked the works of John Amos Comenius! He claims that Comenius's famous book, *The School of Infancy*, was a blueprint for an elite, high-pressure military boarding school for toddlers. What did Comenius *actually* mean by the 'School of Infancy'?", "options": {"A": "A highly formalized corporate preschool where two-year-olds learn complex accounting.", "B": "The home environment itself, where the mother acts as the primary educator during the first six years of life, utilizing gentle, sensory-based learning.", "C": "A mandatory state barracks where children are isolated from parental affection.", "D": "A purely digital learning platform with no human interaction."}, "correct": "B", "character": "Toad", "explanation": "Bup! Comenius is often called the Father of Modern Education. He believed that the first six years of life represent 'The School of Infancy,' where mothers teach basic concepts through nature, everyday objects, and loving care. It's the ultimate home-based ECE foundation!"}, {"id": 9, "world": "World 3-1: Desert Land Ruins", "scenario": "Pokeys are blocking the path! They demand to know why Comenius's *Orbis Sensualium Pictus* (The Visible World in Pictures) is considered a monumental milestone in early childhood curriculum history.", "options": {"A": "It was the first encyclopedia written exclusively for adult military commanders.", "B": "It was the first widely distributed children's picture book, pioneered the concept of sensory realism, and mapped vocabulary directly to visual illustrations.", "C": "It was a book containing only blank pages to encourage abstract hallucination.", "D": "It proved that children learn languages best when they are starved of sensory input."}, "correct": "B", "character": "Yoshi", "explanation": "Yoshi! *Orbis Pictus* was a total game-changer! Comenius realized that children learn through their senses. By pairing woodcut pictures with matching words, he created the world's first true illustrated textbook, making abstract language concrete for young minds."}, {"id": 10, "world": "World 3-2: Vanilla Dome Caverns", "scenario": "Donkey Kong is confused by Enlightenment philosophy! Wario told him that John Locke believed children are born with fully formed, innate evil ideas that must be beaten out of them. Correct this misconception using Locke's core philosophical concept.", "options": {"A": "Locke believed children are born as *Tabula Rasa* (a blank slate), meaning all knowledge and character traits come strictly from experience, environment, and sensory perceptions.", "B": "Locke believed children possess magical, intuitive powers that allow them to bypass physical senses entirely.", "C": "Locke argued that children are born with perfect knowledge of geometry and require no external environment.", "D": "Locke stated that children's minds are solid iron blocks that cannot be altered by education."}, "correct": "A", "character": "Luigi", "explanation": "That's it, DK! *Tabula Rasa* means that a child's mind is like an empty sketchbook or a blank item block. Everything they experience, see, and touch writes onto that slate. This put huge responsibility on ECE educators to create positive, enriching environments!"}, {"id": 11, "world": "World 3-3: Donut Plains Meadows", "scenario": "Bowser Jr. is making fun of Jean-Jacques Rousseau's famous treatise *Emile*. He claims Rousseau viewed children merely as incomplete adults who should be forced to reason like philosophers from the day they are born. What was Rousseau's actual revolutionary argument regarding childhood?", "options": {"A": "Childhood is a distinct, sacred stage of human development with its own unique ways of seeing, thinking, and feeling, which must be respected rather than rushed.", "B": "Children should be placed into full-time factory labor by age three to learn practical mechanics.", "C": "Childhood is a pathological disease that must be cured with rigorous logical lecturing.", "D": "Children are completely identical to adults in cognitive capacity and require identical college lectures."}, "correct": "A", "character": "Princess Peach", "explanation": "Beautifully answered! Rousseau completely shook up the Western world by declaring that children are *not* just small adults. He argued that childhood has its own season, and forcing adult logic onto a child too early is like ruining a delicate flower before it can bloom."}, {"id": 12, "world": "World 3-4: Morton's Lava Castle", "scenario": "Morton Koopa has blocked the drawbridge! He demands an explanation of Rousseau's concept of 'Negative Education.' What does this pedagogical approach entail for an early childhood educator?", "options": {"A": "Constantly telling the child 'No' and punishing every single minor mistake with zero explanation.", "B": "Shielding the child's developing mind from the corrupting influences of society and avoiding formal, verbal lessons in early childhood, allowing nature and direct experience to be the teacher.", "C": "Refusing to feed or shelter the child to test their primitive survival reflexes.", "D": "Teaching children only negative numbers and depressing historical events."}, "correct": "B", "character": "Toad", "explanation": "Bup! Don't let the word 'negative' scare you! Rousseau's 'negative education' doesn't mean bad education. It means *protective* education. The teacher's job is to keep vice and error away from the child's heart, letting them learn naturally through cause-and-effect in nature rather than dry verbal lectures!"}, {"id": 13, "world": "World 4-1: Soda Jungle Swamps", "scenario": "Giant Piranha Plants are blocking the warp pipe! They want to know the meaning of Johann Heinrich Pestalozzi's core concept of *Anschauung* (often translated as sensory intuition or object lessons). How does it apply to ECE?", "options": {"A": "Learning entirely through abstract, text-only definitions memorized without ever seeing the object.", "B": "The process of acquiring knowledge through direct sensory observation of concrete objects, moving from the concrete to the abstract.", "C": "Hypnotizing children so they can learn concepts while asleep.", "D": "Ignoring the physical world completely to focus exclusively on supernatural visions."}, "correct": "B", "character": "Yoshi", "explanation": "Yoshi! Pestalozzi took Rousseau's ideas and brought them into the classroom! He realized children can't understand an abstract word like 'apple' unless they can see, hold, smell, and taste a real, concrete apple first. That's *Anschauung*\u2014the foundation of all true understanding!"}, {"id": 14, "world": "World 4-2: Chocolate Island Mountains", "scenario": "Wario is trying to cut funding for emotional support in schools. He claims Pestalozzi believed education is purely about intellectual brain-training, and that affection has no place in a school. How did Pestalozzi *actually* describe his holistic philosophy?", "options": {"A": "Education must isolate the brain from the rest of the body to maximize raw math scores.", "B": "Education is the harmonious development of the 'Head, Heart, and Hands,' anchored deeply in a nurturing, mother-like atmosphere of love and security.", "C": "Education should only focus on manual labor ('Hands') while completely ignoring intellect and emotions.", "D": "Affection makes children soft and weak, so teachers should remain completely cold and robotic."}, "correct": "B", "character": "Princess Peach", "explanation": "How wonderful! Pestalozzi believed that a child cannot learn intellectually ('Head') or practically ('Hands') unless their emotional and spiritual needs ('Heart') are met first. He insisted that the classroom should mimic a loving, secure home environment. Love is the ultimate power-up!"}, {"id": 15, "world": "World 4-3: Frosted Glacier Peaks", "scenario": "The Snow Pokey is guarding the historical record of industrial early childhood care. It asks: Why is Robert Owen's infant school at New Lanark, Scotland (1816), considered a landmark breakthrough in the history of ECE?", "options": {"A": "It was the first school to employ child factory workers for 18 hours a day to teach them stamina.", "B": "It was the first true infant school for children of working-class factory laborers, demonstrating that an environment of kindness, dance, music, and zero corporate punishment could shape excellent human character.", "C": "It proved that young children learn best when locked in individual, unheated ice isolation cells.", "D": "It was a school designed exclusively to train royal toddlers how to govern colonies."}, "correct": "B", "character": "Luigi", "explanation": "Wow! Robert Owen was an industrialist with a giant heart! He looked at the poor children of cotton mill workers and decided they deserved an education instead of hard labor. He banned punishments, introduced singing and geography for toddlers, and proved that a beautiful environment creates beautiful characters!"}, {"id": 16, "world": "World 4-4: Wendy's Underwater Castle", "scenario": "Wendy O. Koopa is trying to chop down the metaphorical garden of early childhood! Friedrich Froebel coined the word *Kindergarten*. What is the profound conceptual metaphor behind this term?", "options": {"A": "Children are wild weeds that must be aggressively chemically sprayed and contained.", "B": "The school is a garden where children are unique, living plants unfolding according to divine natural laws, and the teacher is a patient, nurturing gardener who facilitates this growth.", "C": "The school is a marketplace where children are commodities to be bought and sold.", "D": "The classroom is a desert where only the toughest, aggressive children survive."}, "correct": "B", "character": "Toad", "explanation": "Bup! *Kindergarten* literally means 'Children's Garden.' Froebel, the Father of Kindergarten, believed that children possess an internal, divine blueprint. Teachers shouldn't force or mold them into artificial shapes; instead, like gardeners, they provide the right soil, water, and sunlight (love, play, and safety) so the child can bloom!"}, {"id": 17, "world": "World 5-1: Sky High Cloud Kingdom", "scenario": "Lakitu is throwing Spiny Eggs! He demands you differentiate between Froebel's famous classroom tools: 'Gifts' (*Gaben*) and 'Occupations' (*Besch\u00e4ftigungen*). What is the structural difference?", "options": {"A": "Gifts are edible rewards like candy, while Occupations are hard manual labor tasks like sweeping the floor.", "B": "Gifts are fixed, unchangeable geometric materials (like wooden spheres and cubes) that reveal universal laws of unity, while Occupations are transformable materials (like clay, paper, and sand) for creative manipulation.", "C": "Gifts are items children must purchase from the school, while Occupations are corporate sponsorships.", "D": "There is no difference; both terms refer to standard text-heavy worksheets."}, "correct": "B", "character": "Yoshi", "explanation": "Yoshi! You nailed it! Froebel's 'Gifts' were beautifully designed geometric items that the child could take apart and assemble to see patterns of cosmic unity without changing the nature of the object itself. 'Occupations' let children completely transform materials (like folding paper or molding clay) to express their inner creativity!"}, {"id": 18, "world": "World 5-2: Bowser's Doom Airship", "scenario": "Bowser is yelling through a megaphone that Dr. Maria Montessori designed her classrooms so that teachers would constantly lecture, yell at, and manually correct every physical move a child makes. Smash this myth by identifying the true function of the Montessori 'Prepared Environment' and the role of 'Self-Correcting Materials.'", "options": {"A": "The environment is chaotic and dirty, and materials have no purpose other than to keep children quiet.", "B": "The environment is meticulously structured with child-sized furniture and specialized, self-correcting didactic materials that allow children to independently discover errors and learn through autonomous activity without constant teacher intervention.", "C": "The materials are high-voltage electronic items that zap the child's hand whenever they make an error.", "D": "The environment is a rigid testing hall where children are ranked on a billboard every hour."}, "correct": "B", "character": "Princess Peach", "explanation": "Sensational victory! Dr. Montessori\u2014Italy's first female physician\u2014realized that if you create a beautifully prepared environment with materials that show the child their own mistakes (like cylinders that only fit in their exact matching holes), the teacher can become a 'director' who observes rather than a dictator who lectures. Liberty within limits!"}, {"id": 19, "world": "World 5-3: Rainbow Road Speedway", "scenario": "The Blue Shell of academic confusion is approaching! To shield yourself, define Dr. Maria Montessori's revolutionary psychological concept of the 'Absorbent Mind' unique to young children.", "options": {"A": "The child's mind is completely non-functional and acts like a brick wall until age seven.", "B": "An unconscious, unique mental power during the first six years of life that effortlessly and holistically absorbs language, culture, and environmental stimuli directly into the child's psychic structure without conscious intellectual fatigue.", "C": "The ability of a child's brain to literally expand in physical size to absorb surrounding physical objects like a vacuum cleaner.", "D": "A state of extreme mental exhaustion that prevents infants from learning anything."}, "correct": "B", "character": "Luigi", "explanation": "Mama mia, you did it! The Absorbent Mind is like a super-powered sponge! Adults have to study hard, take notes, and strain to learn a new language. But a toddler absorbs their entire native language and cultural environment completely unconsciously and flawlessly, just by living in it! It's an incredible window of opportunity."}, {"id": 20, "world": "World 5-4: Bowser's Final Throne Room", "scenario": "You have reached Bowser's throne room! For the ultimate showdown, analyze and synthesize the conceptual difference between John Locke's empiricist *Tabula Rasa* and Maria Montessori's *Absorbent Mind* regarding the child's role in their own learning.", "options": {"A": "Locke viewed the child's mind as a passive receptacle entirely dependent on external environmental writing, whereas Montessori viewed the child's mind as an active, dynamic, and internally driven force that autonomously selects and absorbs environmental stimuli.", "B": "Locke believed the child is a divine omniscient spirit, while Montessori believed the child has zero cognitive capacity.", "C": "Locke argued for zero environmental input, while Montessori argued that the environment is entirely useless.", "D": "There is zero conceptual difference; both thinkers were time-traveling twins who wrote the exact same sentence."}, "correct": "A", "character": "Toad", "explanation": "BOOM! BOWSER IS DEFEATED! Peace is restored to the Mushroom Kingdom! You've shown true expert university mastery. While Locke saw the child as a passive blank slate waiting to be written upon by adults, Montessori saw the child as an active, self-driven explorer who builds their own mind using the raw materials of the environment. You are officially a BECED History Champion!"}];
+
+        let currentQuestionIdx = 0;
+        let score = 0;
+        let tabSwitches = 0;
+        let studentName = "";
+        let yearLevel = "";
+        let answered = false;
+
+        // CHECK PREVIOUS ATTEMPTS IMMEDIATELY
+        if (localStorage.getItem("beced_mario_attempt_completed")) {
+            document.body.innerHTML = `
+                <div class='cheater-overlay' style='display:block; padding-top:10%;'>
+                    <h1>ATTEMPT DENIED</h1>
+                    <p>Our integrity ledger indicates you have already completed this evaluation task.<br><br>
+                    In accordance with university BECED assessment criteria, multiple attempts are strictly deactivated.</p>
+                </div>`;
+        }
+
+        // DETECT TAB SWITCHES / SECURITY BREACH
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                tabSwitches++;
+                document.getElementById("hud-violations").innerText = "TAB LEAVES: " + tabSwitches;
+                // If you want absolute zero tolerance, uncomment the next line to freeze the game instantly upon 1 tab switch:
+                // triggerGameLockdown();
+                alert("🚨 SECURITY FLAG: You left the testing screen! This action has been logged on the telemetry tracker.");
+            }
+        });
+
+        function triggerGameLockdown() {
+            document.getElementById("cheater-screen").style.display = "block";
+        }
+
+        function startGame() {
+            studentName = document.getElementById("student-name").value.trim();
+            yearLevel = document.getElementById("year-level").value;
+
+            if (!studentName || !yearLevel) {
+                alert("Please provide both your Name and Year Level to initialize your player profile!");
+                return;
+            }
+
+            document.getElementById("screen-login").classList.remove("active");
+            document.getElementById("screen-game").classList.add("active");
+
+            document.getElementById("hud-student").innerText = "SCHOLAR: " + studentName.toUpperCase();
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            answered = false;
+            document.getElementById("feedback").style.display = "none";
+            document.getElementById("action-btn").innerText = "Verify Pedagogical Answer ✔️";
+            
+            let q = quizData[currentQuestionIdx];
+            document.getElementById("level-title").innerText = q.world;
+            document.getElementById("level-scenario").innerText = q.scenario;
+            
+            document.getElementById("textA").innerText = q.options.A;
+            document.getElementById("textB").innerText = q.options.B;
+            document.getElementById("textC").innerText = q.options.C;
+            document.getElementById("textD").innerText = q.options.D;
+
+            // Reset selection and clear visual weights
+            let radios = document.getElementsByName("mario_ans");
+            for (let r of radios) r.checked = false;
+            
+            let items = document.querySelectorAll(".option-item");
+            items.forEach(el => el.style.backgroundColor = "#fff");
+        }
+
+        function submitAnswer() {
+            if (answered) {
+                // Advance to next question
+                currentQuestionIdx++;
+                if (currentQuestionIdx < quizData.length) {
+                    loadQuestion();
+                } else {
+                    showResults();
+                }
+                return;
+            }
+
+            let radios = document.getElementsByName("mario_ans");
+            let selectedVal = "";
+            for (let r of radios) {
+                if (r.checked) selectedVal = r.value;
+            }
+
+            if (!selectedVal) {
+                alert("Select an educational option to counter Bowser's claim!");
+                return;
+            }
+
+            answered = true;
+            let q = quizData[currentQuestionIdx];
+            let feedbackBox = document.getElementById("feedback");
+            let speaker = document.getElementById("feedback-speaker");
+            let text = document.getElementById("feedback-text");
+
+            speaker.innerText = q.character.toUpperCase() + " SAYS:";
+            text.innerText = q.explanation;
+
+            if (selectedVal === q.correct) {
+                score++;
+                feedbackBox.className = "feedback-box correct";
+                document.getElementById("hud-score").innerText = "SCORE: " + (score < 10 ? "0" + score : score) + " / 20";
+            } else {
+                feedbackBox.className = "feedback-box incorrect";
+                text.innerText = "🚨 INCORRECT CLAIM DETECTED! " + text.innerText;
+            }
+
+            feedbackBox.style.display = "block";
+            document.getElementById("action-btn").innerText = (currentQuestionIdx === quizData.length - 1) ? "Finalize Quest Results 🏁" : "Advance to Next World Level ➡️";
+        }
+
+        function showResults() {
+            document.getElementById("screen-game").classList.remove("active");
+            document.getElementById("screen-results").classList.add("active");
+
+            let pct = Math.round((score / 20) * 100);
+            document.getElementById("final-score-display").innerText = score + " / 20 (" + pct + "%)";
+            
+            let rank = "";
+            if (score === 20) rank = "🥇 Rank: Star Champion (Flawless Historical Synthesis!)";
+            else if (score >= 15) rank = "🍄 Rank: Super Mushroom Tier (Strong Pedagogical Competency)";
+            else if (score >= 10) rank = "🐢 Rank: Mini Mario Tier (Foundations Require Review)";
+            else rank = "👾 Rank: Game Over (Urgent Curriculum Retraining Prescribed)";
+
+            document.getElementById("final-rank-display").innerText = rank;
+            document.getElementById("final-cheating-display").innerText = "Security Metrics: " + tabSwitches + " window/tab deviation(s) logged.";
+
+            // Lock out future attempts locally
+            localStorage.setItem("beced_mario_attempt_completed", "true");
+        }
+
+        function syncToGoogleSheets() {
+            document.getElementById("sync-btn").disabled = true;
+            document.getElementById("sync-status").innerText = "Initializing cross-domain telemetry transfer...";
+
+            if (WEB_APP_URL.includes("YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL")) {
+                // Demo fallback when Apps Script URL is unconfigured
+                setTimeout(() => {
+                    document.getElementById("sync-status").style.color = "#ff9900";
+                    document.getElementById("sync-status").innerText = "⚠️ Simulation Mode Active: Local database record built successfully! (To connect live tracker, deploy the Apps Script code from Tab 3 of the Excel template).";
+                }, 1500);
+                return;
+            }
+
+            const payload = {
+                name: studentName,
+                yearLevel: yearLevel,
+                score: score,
+                tabSwitches: tabSwitches
+            };
+
+            fetch(WEB_APP_URL, {
+                method: "POST",
+                mode: "no-cors", // Required for Google Web App redirection patterns
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(() => {
+                document.getElementById("sync-status").style.color = "#43b047";
+                document.getElementById("sync-status").innerText = "✅ live score data safely synchronized with your Professor's central tracking register!";
+            })
+            .catch(err => {
+                document.getElementById("sync-status").style.color = "#e52521";
+                document.getElementById("sync-status").innerText = "❌ Sync Exception: " + err.toString();
+                document.getElementById("sync-btn").disabled = false;
+            });
+        }
+    </script>
+</body>
+</html>
